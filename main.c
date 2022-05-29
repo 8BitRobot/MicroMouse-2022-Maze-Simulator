@@ -3,74 +3,48 @@
 #include "solver.h"
 #include "API.h"
 
-void fillManhattanDists() {
-    // quadrant 1
-    int startNum = 7;
-    for (int i = 0; i <= 7; i++) {
-        int cNum = startNum;
-        for (int j = 8; j <= 15; j++) {
-            distances[i][j] = cNum;
-            char* str = malloc(3);
-            API_setText(j, 15 - i, itoa(cNum++, str, 10));
-            free(str);
-        }
-        startNum--;
-    }
-    // quadrant 2
-    startNum = 14;
-    for (int i = 0; i <= 7; i++) {
-        int cNum = startNum;
-        for (int j = 0; j <= 7; j++) {
-            distances[i][j] = cNum;
-            char* str = malloc(3);
-            API_setText(j, 15 - i, itoa(cNum--, str, 10));
-            free(str);
-        }
-        startNum--;
-    }
-    // quadrant 3
-    startNum = 7;
-    for (int i = 8; i <= 15; i++) {
-        int cNum = startNum;
-        for (int j = 0; j <= 7; j++) {
-            distances[i][j] = cNum;
-            char* str = malloc(3);
-            API_setText(j, 15 - i, itoa(cNum--, str, 10));
-            free(str);
-        }
-        startNum++;
-    }
-    // quadrant 3
-    startNum = 0;
-    for (int i = 8; i <= 15; i++) {
-        int cNum = startNum;
-        for (int j = 8; j <= 15; j++) {
-            distances[i][j] = cNum;
-            char* str = malloc(3);
-            API_setText(j, 15 - i, itoa(cNum++, str, 10));
-            free(str);
-        }
-        startNum++;
-    }
-}
+int idleCount = 0;
+int currentGoalX = 0;
+int currentGoalY = 0;
 
 int main(int argc, char* argv[]) {
-    debug_log("Running...");
+    // debug_log("Running...");
     API_clearAllText();
-    fillManhattanDists();
+    // fillManhattanDists();
+    floodFillDistToPoint(0, 0);
     while (1) {
         Action nextMove = solver();
-        switch(nextMove){
+        switch (nextMove) {
             case FORWARD:
                 API_moveForward();
+                idleCount = 0;
                 break;
             case LEFT:
                 API_turnLeft();
+                idleCount = 0;
                 break;
             case RIGHT:
                 API_turnRight();
+                idleCount = 0;
                 break;
             case IDLE:
+                idleCount++;
+                if (idleCount == 10) {
+                    idleCount = 0;
+                    if (currentGoalX == 0 && currentGoalY == 0) {
+                        currentGoalX = 15;
+                    } else if (currentGoalX == 15 && currentGoalY == 0) {
+                        currentGoalY = 15;
+                    } else if (currentGoalX == 15 && currentGoalY == 15) {
+                        currentGoalX = 0;
+                    } else if (currentGoalX == 0 && currentGoalY == 15) {
+                        currentGoalX = 7;
+                        currentGoalY = 7;
+                    } else if (currentGoalX == 7 && currentGoalY == 7) return 0;
+                    floodFillDistToPoint(currentGoalX, currentGoalY);
+                    // fprintf(stderr, "floodfilled dist to %d %d\n", currentGoalX, currentGoalY);
+                    // fflush(stderr);
+                }
                 break;
         }
     }

@@ -126,10 +126,10 @@ char headingToWallDirection(int direction, char lrf) {
             return 'e';
             break;
         case 2:
-            return 'w';
+            return 's';
             break;
         case 3:
-            return 's';
+            return 'w';
             break;
         }
     } else if (lrf == 'l') {
@@ -138,13 +138,13 @@ char headingToWallDirection(int direction, char lrf) {
             return 'w';
             break;
         case 1:
-            return 's';
+            return 'n';
             break;
         case 2:
             return 'e';
             break;
         case 3:
-            return 'n';
+            return 's';
             break;
         }
     } else if (lrf == 'r') {
@@ -153,13 +153,13 @@ char headingToWallDirection(int direction, char lrf) {
             return 'e';
             break;
         case 1:
-            return 'n';
+            return 's';
             break;
         case 2:
             return 'w';
             break;
         case 3:
-            return 's';
+            return 'n';
             break;
         }
     }

@@ -7,7 +7,6 @@ typedef enum Action {LEFT, FORWARD, RIGHT, IDLE} Action;
 struct Point {
     int x;
     int y;
-    int mdist;
 };
 
 struct Queue {
@@ -17,16 +16,23 @@ struct Queue {
 };
 
 void enqueue(struct Queue* q, struct Point* p);
-
 struct Point* dequeue(struct Queue* q);
+int queueIsEmpty(struct Queue* q);
 
-int hwalls[17][16];
-int vwalls[16][17];
+int hwalls[16][17]; // walls blocking horizontal movement
+int vwalls[17][16]; // walls blocking vertical movement
 int distances[16][16];
 
 Action solver();
 Action leftWallFollower();
+
+Action dirToAction();
 Action manhattanFollower();
-Action floodFill();
+void localFloodFill();
+
+void fillManhattanDists();
+void emptyDistances();
+void floodFillDistToCenter();
+void floodFillDistToPoint(int spointx, int spointy);
 
 #endif
